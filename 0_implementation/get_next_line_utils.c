@@ -6,7 +6,7 @@
 /*   By: wel-safa <wel-safa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 19:36:48 by wel-safa          #+#    #+#             */
-/*   Updated: 2023/07/17 19:43:55 by wel-safa         ###   ########.fr       */
+/*   Updated: 2023/07/18 16:48:56 by wel-safa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,18 @@ void	ft_bzero(void *s, size_t n)
 		((char *)s)[i] = 0;
 		i++;
 	}
+}
+
+void	ft_readcat(char *readline, char *buf)
+{
+	size_t	i;
+
+	i = 0;
+	if (!readline)
+		return ;
+	while(readline[i])
+		i++;
+	readline[i] = buf[0];
 }
 
 /*int	ft_strcmp(char *s1, char *s2)

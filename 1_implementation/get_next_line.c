@@ -6,7 +6,7 @@
 /*   By: wel-safa <wel-safa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 18:58:39 by wel-safa          #+#    #+#             */
-/*   Updated: 2023/07/17 19:45:59 by wel-safa         ###   ########.fr       */
+/*   Updated: 2023/07/18 20:38:19 by wel-safa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,39 +14,43 @@
 
 char	*get_next_line(int fd)
 {
-	char	*readline;
-	int		readret;
-	char	buf[1];
+	static char	*buffer = NULL;
+	char		*rest;
 
-	readret = 1;
-	if (fd == -1)
+	temp = 0;
+	if (fd == -1 || read(fd, 0, 0) < 0)
 		return (NULL);
-	readline = (char *)ft_calloc(BUFFER_SIZE + 1, 1);
-	if (!readline)
-		return (NULL);
-	readline[BUFFER_SIZE] = 0;
-	while(readret != -1 && buf[0] != '\n' && buf[0] != '\0')
+	if (/* Buffer has a new line in it*/)
 	{
-		readret = read(fd, buf, 1);
-		// copy character in buffer to the end of string in readline
+		// We have to return everything before new line.
+		// and keep the rest saved in the static variable.
 	}
-	
+	rest = ft_restcpy(buffer);// copy buffer to rest
+	// free buffer
+	buffer = (char *)ft_calloc(BUFFER_SIZE + ft_strlen(rest) + 1, 1);
+	if (!buffer)
+		return (NULL);
+	read(fd, buffer, 1);
+	return (buffer);
 }
 
 int	main(void)
 {
-	int	fd;
+	int		fd;
 	char	*filepath;
 	char	*line;
 
 	filepath = "test.txt";
 	fd = open(filepath, O_RDONLY);
+	//fd = 0;
 	line = get_next_line(fd);
 	while(line)
 	{
 		printf("%s", line);
+		free(line);
 		line = get_next_line(fd);
 	}
+	free(line);
 	close(fd);
 	return 0;
 }
