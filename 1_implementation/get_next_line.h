@@ -6,7 +6,7 @@
 /*   By: wel-safa <wel-safa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 18:59:26 by wel-safa          #+#    #+#             */
-/*   Updated: 2023/07/18 20:38:25 by wel-safa         ###   ########.fr       */
+/*   Updated: 2023/07/19 17:06:45 by wel-safa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,13 @@
 
 char	*get_next_line(int fd);
 void	*ft_calloc(size_t nmemb, size_t size);
+char	*ft_restcpy(char *buffer);
 void	ft_bzero(void *s, size_t n);
 void	ft_readcat(char *readline, char *buf);
-void ft
+size_t	ft_strlen(const char *s);
+void	ft_readcat(char *readline, char *buf);
+int		ft_checknl(char *buffer);
+char	*ft_splitnl(char *buff, int i);
+
+
 #endif

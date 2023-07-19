@@ -6,7 +6,7 @@
 /*   By: wel-safa <wel-safa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 19:36:48 by wel-safa          #+#    #+#             */
-/*   Updated: 2023/07/18 20:38:22 by wel-safa         ###   ########.fr       */
+/*   Updated: 2023/07/19 17:07:34 by wel-safa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,23 +23,6 @@ size_t	ft_strlen(const char *s)
 		s++;
 	}
 	return (n);
-}
-
-char	*ft_restcpy(char *buffer)
-{
-	int	i;
-
-	i = 0;
-	rest = (char *)malloc(ft_strlen(buffer) + 1);
-	if (!rest)
-		return NULL;
-	while(buffer[i])
-	{
-		rest[i] = buffer[i];
-		i++;
-	}
-	rest[i] = 0;
-	return (rest);
 }
 
 void	*ft_calloc(size_t nmemb, size_t size)
@@ -76,7 +59,7 @@ void	ft_readcat(char *readline, char *buf)
 	i = 0;
 	if (!readline)
 		return ;
-	while(readline[i])
+	while (readline[i])
 		i++;
 	readline[i] = buf[0];
 }
@@ -96,3 +79,21 @@ void	ft_readcat(char *readline, char *buf)
 		return (s1[i] - s2[i]);
 	return (0);
 }*/
+
+/*char	*ft_restcpy(char *buffer)
+{
+	int	i;
+	char	*rest;
+	i = 0;
+	rest = (char *)malloc(ft_strlen(buffer) + 1);
+	if (!rest)
+		return (NULL);
+	while (buffer[i])
+	{
+		rest[i] = buffer[i];
+		i++;
+	}
+	rest[i] = 0;
+	return (rest);
+}
+*/
