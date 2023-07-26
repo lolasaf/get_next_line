@@ -1,0 +1,28 @@
+read result == bytes read except when nthn to read it will be -1
+if (bytesread == BUFFER_SIZE && staticvar does not include '\n)
+	read again;
+	check again if bytesread < BUFFER_SIZE << reached end of file
+		return everything in static variable, free and return the copy
+
+first check static is line; 
+
+buff, i = 1
+I\nlike\nme\0
+01 23456 789
+
+like\nme\0\0\0
+01234 567 8 9
+
+temp = malloc(i + 2) = malloc (3).
+
+j = 0 to j = i
+temp[j] = buff[j], at indexes 1 and 2. correct.
+
+j = 0, while buff[j]
+
+if (j > strlen(buff) - i [8]) --> j = 7 to j = 8
+
+else --> j = 0 to j = 6
+buff[j] = buff[j + i + 1]
+buff[0] = buff[2]
+

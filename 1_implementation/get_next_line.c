@@ -6,14 +6,14 @@
 /*   By: wel-safa <wel-safa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 18:58:39 by wel-safa          #+#    #+#             */
-/*   Updated: 2023/07/19 17:41:23 by wel-safa         ###   ########.fr       */
+/*   Updated: 2023/07/26 16:43:23 by wel-safa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
 /*
-Check if buffer has new line and return index of line
+	Check if buffer has new line and return index of line
 */
 int	ft_checknl(char *buffer)
 {
@@ -32,16 +32,21 @@ int	ft_checknl(char *buffer)
 }
 
 /*
-	return string before new line ending in new line and null
-	rearrange buffer to keep everything after new line and null the rest of the buffer space.
+	returns string before new line ending in new line and null
+	rearranges buffer to keep everything after new line and 
+	nulls the rest of the buffer space.
 */
-char	*ft_splitnl(char *buff, int i)
+char	*ft_splitnl(char *buff, size_t i)
 {
-	int		j;
+	size_t	j;
 	char	*temp;
-	//char	rest[ft_strlen(buff) - i + 1];
 
+	if (!buff || ft_strlen(buff) == 0)
+		return (NULL);
 	temp = (char *)ft_calloc(sizeof(char), i + 2);
+	if (!temp)
+		return (NULL);
+	temp[i + 1] = 0;
 	j = 0;
 	while (j <= i)
 	{
@@ -49,101 +54,96 @@ char	*ft_splitnl(char *buff, int i)
 		j++;
 	}
 	j = 0;
+	printf("\nftsplitnl:\n\n");
+	printf("temp = ||%s||\n", temp);
 	while (buff[j])
 	{
-		if (j > (ft_strlen(buff) - i))
-			buff[j] = '\0';
-		else
+		if (j < (ft_strlen(buff) - i - 1))
+		{
 			buff[j] = buff[j + i + 1];
+			printf("i = %zu, j = %zu\n", i, j);
+			printf("buff[%zu] = buf[%zu]\n", j, j + i + 1);
+			printf("|%c| = |%c|\n", buff[j], buff[j + i + 1]);
+		}
+		else
+			buff[j] = '\0';
 		j++;
 	}
 	return (temp);
 }
 // temp should be freed later in main function when testing
 
-char	*ft_strdup(const char *s)
+/* ft_readfile function reads BUFFER_SIZE elements into temp buf 
+and calls a join function ft_buffjoin that joins 
+old buffer with temp buff and returns new malloced buffer;
+old buffer is freed
+returns negative value on error */
+/*char	*ft_readfile(int fd, char *buffer)
 {
-	size_t	size;
-	char	*ptr;
-	size_t	i;
+	int		bytesread;
+	char	newread[BUFFER_SIZE + 1];
 
-	i = 0;
-	size = ft_strlen(s);
-	ptr = (char *)malloc(size + 1);
-	if (!ptr)
-		return (0);
-	while (i < size + 1)
-	{
-		((char *)ptr)[i] = ((char *)s)[i];
-		i++;
-	}
-	return (ptr);
-}
-
-int ft_readfile(int fd, char **bufferptr)
-{
-	char	*buffer;
-
-	buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	if(read(fd, buffer, BUFFER_SIZE) < 0)
-	{
-		free(buffer);
-		return (-1);
-	}
-	bufferptr[0] = buffer;
-	return (0);
-}
+	bytesread = read(fd, newread, BUFFER_SIZE);
+	if (bytesread < 0)
+		return (NULL);
+	else if (bytesread == 0)
+		return (buffer);
+	while (bytesread <= BUFFER_SIZE)
+		newread[bytesread++] = 0;
+	buffer = ft_buffjoin(buffer, newread);
+	if (!buffer)
+		return (NULL);
+	return (buffer);
+}*/
 
 /*
-read(fd, 0, 0) if negative -> All contents of the file have been read or error occured
+	if (read(fd, 0, 0) < 0)
+	All contents of the file have been read or error occured
 */
 char	*get_next_line(int fd)
 {
-	static char	*bufferptr[1];
-	char		*temp;
-	char		*rest;
+	static char	*buffer;
+	char		newread[BUFFER_SIZE + 1];
+	int			bytesread;
 
 	if (fd == -1 || read(fd, 0, 0) < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	// maybe for the read check, I should free buffer?
-	if (!bufferptr[0]) // has not been assigned a value yet
-		ft_readfile(fd, bufferptr);
-	if (ft_checknl(bufferptr[0]) >= 0) // new line was found
+	if (!buffer)
 	{
-		return (ft_splitnl(bufferptr[0], ft_checknl(bufferptr[0])));
-		// We have to return everything before new line.
-		// and keep the rest malloced and saved in the static variable.
+		buffer = (char *)ft_calloc(1, 1);
+		if (!buffer)
+			return (NULL);
 	}
-	else
+	while (ft_checknl(buffer) < 0)
 	{
-		temp = ft_strdup(bufferptr[0]);
-		// copy buffer to temp
-		free(bufferptr[0]);
-		// free buffer
-		
-		// malloc new buffer and assign it to bufferptr[0]
-		// copy temp to new malloced buffer
-		// read more file contents into temp value
-		// concat temp into buffer
-		// get_next_line.
-		// or while(buffer has no new line in it keep reading)
+		bytesread = read(fd, newread, BUFFER_SIZE);
+		if (bytesread < 0)
+			return (NULL);
+		else if (bytesread == 0)
+		{
+			if (ft_strlen(buffer) == 0)
+				return (NULL);
+			return (ft_strdup(buffer));
+		}
+		newread[bytesread] = 0;
+		buffer = ft_buffjoin(buffer, newread);
+		if (!buffer || ft_strlen(buffer) == 0)
+		{
+			free(buffer);
+			return (NULL);
+		}
 	}
-	//rest = ft_restcpy(bufferptr[0]);// copy buffer to rest
-	// free buffer
-	//buffer = (char *)ft_calloc(BUFFER_SIZE + ft_strlen(rest) + 1, 1);
-	//if (!buffer)
-	//	return (NULL);
-	read(fd, bufferptr[0], 1);
-	return (bufferptr[0]);
+	return (ft_splitnl(buffer, (size_t) ft_checknl(buffer)));
 }
-/*
+
+
 int	main(void)
 {
 	int		fd;
 	char	*filepath;
 	char	*line;
 
-	filepath = "test.txt";
+	filepath = "files/41_no_nl";
 	fd = open(filepath, O_RDONLY);
 	//fd = 0;
 	line = get_next_line(fd);
@@ -157,4 +157,3 @@ int	main(void)
 	close(fd);
 	return (0);
 }
-*/
