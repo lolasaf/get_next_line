@@ -6,7 +6,7 @@
 /*   By: wel-safa <wel-safa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 18:58:39 by wel-safa          #+#    #+#             */
-/*   Updated: 2023/07/28 18:07:54 by wel-safa         ###   ########.fr       */
+/*   Updated: 2023/07/27 20:35:38 by wel-safa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	ft_checknl(char *buffer)
 	int	i;
 
 	i = 0;
-	if (!buffer || ft_strlen(buffer) == 0)
+	if (!buffer)
 		return (-1);
 	while (buffer[i])
 	{
@@ -42,7 +42,11 @@ char	*ft_splitnl(char *buff, int i, int bytesread)
 	char	*temp;
 
 	if (!buff || ft_strlen(buff) == 0)
+	{
+		free(buff);
+		buff = NULL;
 		return (NULL);
+	}
 	if (i < 0)
 		i = ft_strlen(buff) - 1;
 	temp = (char *)ft_calloc(sizeof(char), i + 2);
@@ -73,7 +77,7 @@ char	*ft_splitnl(char *buff, int i, int bytesread)
 	}
 	if (bytesread == 0)
 	{
-		//free(buff);
+		free(buff);
 		buff = NULL;
 	}
 	return (temp);
@@ -107,158 +111,60 @@ returns negative value on error */
 	if (read(fd, 0, 0) < 0)
 	All contents of the file have been read or error occured
 */
-char	*get_next_line_save(int fd)
-{
-	static char	*buffer; // I will keep everything here
-	char		*newread; // everytime i read i will save it here
-	int			bytesread;
-
-	bytesread = 0;
-	if (fd == -1 || read(fd, 0, 0) < 0 || BUFFER_SIZE <= 0)
-		return (NULL);
-	//printf("%d\n", BUFFER_SIZE);
-	newread = (char *)ft_calloc(1, BUFFER_SIZE + 1);
-	if (!newread)
-		return (NULL);
-	//newread[BUFFER_SIZE] = 0;
-	if (!buffer)
-	{
-		buffer = (char *)ft_calloc(1, 1);
-		if (!buffer)
-		{
-			free(newread);
-			return (NULL);
-		}
-	}
-	while (ft_checknl(buffer) < 0)
-	{
-		bytesread = read(fd, newread, BUFFER_SIZE);
-		if (bytesread < 0)
-		{
-			free(buffer);
-			free(newread);
-			return (NULL);
-		}
-		else if (bytesread == 0)
-		{
-			if (ft_strlen(buffer) == 0)
-			{
-				free(newread);
-				//free(buffer);
-				return (NULL);
-			}
-			free(newread);
-			return (ft_splitnl(buffer, ft_checknl(buffer), bytesread));
-		}
-		//i = bytesread;
-		//while (i <= BUFFER_SIZE)
-		//	newread[i++] = 0;
-		buffer = ft_buffjoin(buffer, newread);
-		if (!buffer)
-		{
-			free(newread);
-			return (NULL);
-		}
-		if(ft_strlen(buffer) == 0)
-		{
-			free(newread);
-			return (NULL);
-		}
-	}
-	free(newread);
-	return (ft_splitnl(buffer, ft_checknl(buffer), bytesread));
-}
-
-
-// int	check_empty(int fd)
-// {
-// 	char *array[2];
-
-// 	if(read(fd, array[0], 1))
-// 		return 0;
-// }
-
 char	*get_next_line(int fd)
 {
-	static char	*buffer; // I will keep everything here
-	char		*newread; // everytime i read i will save it here
+	static char	*buffer;
+	char		newread[BUFFER_SIZE + 1];
 	int			bytesread;
 	int			i;
 
 	i = 0;
-	bytesread = 0;
-	if (fd == -1 || read(fd, 0, 0) < 0 || BUFFER_SIZE <= 0)
-		return (NULL);
-	//printf("%d\n", BUFFER_SIZE);
-	newread = (char *)ft_calloc(1, BUFFER_SIZE + 1);
-	if (!newread)
-		return (NULL);
-	bytesread = read(fd, newread, BUFFER_SIZE);
-	if (bytesread <= 0)
-	{
-		free(newread);
-		return(NULL);
-	}
 	if (!buffer)
 	{
 		buffer = (char *)ft_calloc(1, 1);
 		if (!buffer)
-		{
-			free(newread);
 			return (NULL);
-		}
 	}
 	while (ft_checknl(buffer) < 0)
 	{
-		if (i > 0)
+		if (fd == -1 || read(fd, 0, 0) < 0 || BUFFER_SIZE <= 0)
 		{
-			bytesread = read(fd, newread, BUFFER_SIZE);
-			if (bytesread < 0)
+			free(buffer);
+			return (NULL);
+		}
+		bytesread = read(fd, newread, BUFFER_SIZE);
+		if (bytesread < 0)
+			return (NULL);
+		else if (bytesread == 0)
+		{
+			if (ft_strlen(buffer) == 0)
 			{
 				free(buffer);
-				free(newread);
 				return (NULL);
 			}
-			else if (bytesread == 0)
-			{
-				if (ft_strlen(buffer) == 0)
-				{
-					free(newread);
-					//free(buffer);
-					return (NULL);
-				}
-				free(newread);
-				return (ft_splitnl(buffer, ft_checknl(buffer), bytesread));
-			}
+			return (ft_splitnl(buffer, ft_checknl(buffer), bytesread));
 		}
-		//i = bytesread;
-		//while (i <= BUFFER_SIZE)
-		//	newread[i++] = 0;
+		i = bytesread;
+		while (i <= BUFFER_SIZE)
+			newread[i++] = 0;
 		buffer = ft_buffjoin(buffer, newread);
-		if (!buffer)
+		if (!buffer || ft_strlen(buffer) == 0)
 		{
-			free(newread);
+			free(buffer);
 			return (NULL);
 		}
-		if(ft_strlen(buffer) == 0)
-		{
-			free(newread);
-			return (NULL);
-		}
-		i++;
 	}
-	free(newread);
 	return (ft_splitnl(buffer, ft_checknl(buffer), bytesread));
 }
 
-/*
+
 int	main(void)
 {
 	int		fd;
 	char	*filepath;
 	char	*line;
 
-	filepath = "files/43_no_nl";
+	filepath = "files/41_no_nl";
 	fd = open(filepath, O_RDONLY);
 	//fd = 0;
 	line = get_next_line(fd);
@@ -266,10 +172,11 @@ int	main(void)
 	{
 		printf("%s", line);
 		free(line);
+		line = NULL;
 		line = get_next_line(fd);
 	}
-	if (line)
-		free(line);
+	free(line);
+	line = NULL;
 	close(fd);
 	return (0);
-}*/
+}

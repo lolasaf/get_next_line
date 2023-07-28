@@ -6,7 +6,7 @@
 /*   By: wel-safa <wel-safa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 19:36:48 by wel-safa          #+#    #+#             */
-/*   Updated: 2023/07/28 17:40:08 by wel-safa         ###   ########.fr       */
+/*   Updated: 2023/07/27 20:27:08 by wel-safa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,11 @@ size_t	ft_strlen(const char *s)
 	n = 0;
 	if (!s)
 		return (0);
-	//printf("%s\n", s);
-	while (s[n])
+	while (*s)
+	{
 		n++;
+		s++;
+	}
 	return (n);
 }
 
@@ -62,7 +64,8 @@ char	*ft_buffjoin(char *buffer, char const *newread)
 
 	temp = ft_strdup(buffer);
 	free(buffer);
-	buffer = (char *)ft_calloc(1, ft_strlen(temp) + ft_strlen(newread) + 1);
+	buffer = NULL;
+	buffer = (char *)malloc(ft_strlen(temp) + ft_strlen(newread) + 1);
 	if (!buffer)
 		return (NULL);
 	i = -1;
@@ -76,6 +79,7 @@ char	*ft_buffjoin(char *buffer, char const *newread)
 	}
 	buffer[i] = 0;
 	free(temp);
+	temp = NULL;
 	return (buffer);
 }
 
