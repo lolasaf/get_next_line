@@ -6,7 +6,7 @@
 /*   By: wel-safa <wel-safa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 19:36:48 by wel-safa          #+#    #+#             */
-/*   Updated: 2023/07/28 17:40:08 by wel-safa         ###   ########.fr       */
+/*   Updated: 2023/07/31 17:42:49 by wel-safa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ size_t	ft_strlen(const char *s)
 	n = 0;
 	if (!s)
 		return (0);
-	//printf("%s\n", s);
 	while (s[n])
 		n++;
 	return (n);
@@ -58,7 +57,7 @@ It joins both strings into a new malloced buffer, and frees old buffer.
 char	*ft_buffjoin(char *buffer, char const *newread)
 {
 	char	*temp;
-	size_t	i;
+	int		i;
 
 	temp = ft_strdup(buffer);
 	free(buffer);
@@ -87,7 +86,7 @@ char	*ft_strdup(const char *s)
 
 	i = 0;
 	size = ft_strlen(s);
-	ptr = (char *)malloc(size + 1);
+	ptr = (char *)ft_calloc(1, size + 1);
 	if (!ptr)
 		return (0);
 	while (i < size + 1)

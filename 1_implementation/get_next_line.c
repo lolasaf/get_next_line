@@ -6,7 +6,7 @@
 /*   By: wel-safa <wel-safa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 18:58:39 by wel-safa          #+#    #+#             */
-/*   Updated: 2023/07/28 18:07:54 by wel-safa         ###   ########.fr       */
+/*   Updated: 2023/07/31 18:40:26 by wel-safa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,9 @@ int	ft_checknl(char *buffer)
 	rearranges buffer to keep everything after new line and 
 	nulls the rest of the buffer space.
 */
-char	*ft_splitnl(char *buff, int i, int bytesread)
+char	*ft_splitnl(char *buff, int i)
 {
-	int	j;
+	int		j;
 	char	*temp;
 
 	if (!buff || ft_strlen(buff) == 0)
@@ -56,25 +56,13 @@ char	*ft_splitnl(char *buff, int i, int bytesread)
 		j++;
 	}
 	j = 0;
-	// printf("\nftsplitnl:\n\n");
-	// printf("temp = ||%s||\n", temp);
 	while (buff[j])
 	{
 		if (j < ((int)ft_strlen(buff) - i - 1))
-		{
 			buff[j] = buff[j + i + 1];
-			// printf("i = %zu, j = %zu\n", i, j);
-			// printf("buff[%zu] = buf[%zu]\n", j, j + i + 1);
-			// printf("|%c| = |%c|\n", buff[j], buff[j + i + 1]);
-		}
 		else
 			buff[j] = '\0';
 		j++;
-	}
-	if (bytesread == 0)
-	{
-		//free(buff);
-		buff = NULL;
 	}
 	return (temp);
 }
@@ -103,24 +91,19 @@ returns negative value on error */
 	return (buffer);
 }*/
 
-/*
-	if (read(fd, 0, 0) < 0)
-	All contents of the file have been read or error occured
-*/
-char	*get_next_line_save(int fd)
+/* if (read(fd, 0, 0) < 0) >> error occured */
+char	*get_next_line(int fd)
 {
-	static char	*buffer; // I will keep everything here
-	char		*newread; // everytime i read i will save it here
+	static char	*buffer;
+	char		*newread;
 	int			bytesread;
 
 	bytesread = 0;
 	if (fd == -1 || read(fd, 0, 0) < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	//printf("%d\n", BUFFER_SIZE);
 	newread = (char *)ft_calloc(1, BUFFER_SIZE + 1);
 	if (!newread)
 		return (NULL);
-	//newread[BUFFER_SIZE] = 0;
 	if (!buffer)
 	{
 		buffer = (char *)ft_calloc(1, 1);
@@ -141,44 +124,30 @@ char	*get_next_line_save(int fd)
 		}
 		else if (bytesread == 0)
 		{
-			if (ft_strlen(buffer) == 0)
-			{
-				free(newread);
-				//free(buffer);
-				return (NULL);
-			}
 			free(newread);
-			return (ft_splitnl(buffer, ft_checknl(buffer), bytesread));
+			if (ft_strlen(buffer) == 0)
+				return (NULL);
+			return (ft_splitnl(buffer, ft_checknl(buffer)));
 		}
-		//i = bytesread;
-		//while (i <= BUFFER_SIZE)
-		//	newread[i++] = 0;
+		newread[bytesread] = 0;
 		buffer = ft_buffjoin(buffer, newread);
 		if (!buffer)
 		{
 			free(newread);
 			return (NULL);
 		}
-		if(ft_strlen(buffer) == 0)
+		if (ft_strlen(buffer) == 0)
 		{
+			free(buffer);
 			free(newread);
 			return (NULL);
 		}
 	}
 	free(newread);
-	return (ft_splitnl(buffer, ft_checknl(buffer), bytesread));
+	return (ft_splitnl(buffer, ft_checknl(buffer)));
 }
 
-
-// int	check_empty(int fd)
-// {
-// 	char *array[2];
-
-// 	if(read(fd, array[0], 1))
-// 		return 0;
-// }
-
-char	*get_next_line(int fd)
+/*char	*get_next_line_new_attempt(int fd)
 {
 	static char	*buffer; // I will keep everything here
 	char		*newread; // everytime i read i will save it here
@@ -250,26 +219,28 @@ char	*get_next_line(int fd)
 	free(newread);
 	return (ft_splitnl(buffer, ft_checknl(buffer), bytesread));
 }
+*/
 
-/*
 int	main(void)
 {
 	int		fd;
 	char	*filepath;
 	char	*line;
 
-	filepath = "files/43_no_nl";
+	filepath = "emptytest.txt";
 	fd = open(filepath, O_RDONLY);
 	//fd = 0;
 	line = get_next_line(fd);
+	printf("%s", line);
 	while (line)
 	{
 		printf("%s", line);
-		free(line);
+		free (line);
 		line = get_next_line(fd);
 	}
+	//line = get_next_line(fd);
 	if (line)
-		free(line);
-	close(fd);
+		free (line);
+	close (fd);
 	return (0);
-}*/
+}

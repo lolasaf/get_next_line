@@ -6,7 +6,7 @@
 /*   By: wel-safa <wel-safa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 18:59:26 by wel-safa          #+#    #+#             */
-/*   Updated: 2023/07/28 17:01:25 by wel-safa         ###   ########.fr       */
+/*   Updated: 2023/07/31 18:16:41 by wel-safa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # ifdef BUFFER_SIZE
 # else
-#  define BUFFER_SIZE 1
+#  define BUFFER_SIZE 10
 # endif
 
 # include <stdio.h>
@@ -27,7 +27,7 @@
 
 char	*get_next_line(int fd);
 int		ft_checknl(char *buffer);
-char	*ft_splitnl(char *buff, int i, int bytesread);
+char	*ft_splitnl(char *buff, int i);
 char	*ft_readfile(int fd, char *buffer);
 size_t	ft_strlen(const char *s);
 void	*ft_calloc(size_t nmemb, size_t size);
