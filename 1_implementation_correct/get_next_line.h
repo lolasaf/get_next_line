@@ -6,7 +6,7 @@
 /*   By: wel-safa <wel-safa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 18:59:26 by wel-safa          #+#    #+#             */
-/*   Updated: 2023/07/31 18:16:41 by wel-safa         ###   ########.fr       */
+/*   Updated: 2023/08/09 14:20:42 by wel-safa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # ifdef BUFFER_SIZE
 # else
-#  define BUFFER_SIZE 10
+#  define BUFFER_SIZE 1
 # endif
 
 # include <stdio.h>

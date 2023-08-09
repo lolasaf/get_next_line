@@ -6,7 +6,7 @@
 /*   By: wel-safa <wel-safa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 18:58:39 by wel-safa          #+#    #+#             */
-/*   Updated: 2023/07/31 18:40:26 by wel-safa         ###   ########.fr       */
+/*   Updated: 2023/08/09 15:31:16 by wel-safa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,9 @@ int	ft_checknl(char *buffer)
 	int	i;
 
 	i = 0;
-	if (!buffer || ft_strlen(buffer) == 0)
+	if (!buffer)
+		return (-1);
+	if (ft_strlen(buffer) == 0)
 		return (-1);
 	while (buffer[i])
 	{
@@ -48,7 +50,6 @@ char	*ft_splitnl(char *buff, int i)
 	temp = (char *)ft_calloc(sizeof(char), i + 2);
 	if (!temp)
 		return (NULL);
-	temp[i + 1] = 0;
 	j = 0;
 	while (j <= i)
 	{
@@ -99,7 +100,7 @@ char	*get_next_line(int fd)
 	int			bytesread;
 
 	bytesread = 0;
-	if (fd == -1 || read(fd, 0, 0) < 0 || BUFFER_SIZE <= 0)
+	if (fd == -1 || BUFFER_SIZE <= 0)
 		return (NULL);
 	newread = (char *)ft_calloc(1, BUFFER_SIZE + 1);
 	if (!newread)
@@ -119,6 +120,7 @@ char	*get_next_line(int fd)
 		if (bytesread < 0)
 		{
 			free(buffer);
+			buffer = NULL;
 			free(newread);
 			return (NULL);
 		}
@@ -126,13 +128,18 @@ char	*get_next_line(int fd)
 		{
 			free(newread);
 			if (ft_strlen(buffer) == 0)
+			{
+				free(buffer);
+				buffer = NULL;
 				return (NULL);
+			}
 			return (ft_splitnl(buffer, ft_checknl(buffer)));
 		}
 		newread[bytesread] = 0;
 		buffer = ft_buffjoin(buffer, newread);
 		if (!buffer)
 		{
+			free(buffer);
 			free(newread);
 			return (NULL);
 		}
@@ -221,26 +228,26 @@ char	*get_next_line(int fd)
 }
 */
 
-int	main(void)
-{
-	int		fd;
-	char	*filepath;
-	char	*line;
+// int	main(void)
+// {
+// 	int		fd;
+// 	char	*filepath;
+// 	char	*line;
 
-	filepath = "emptytest.txt";
-	fd = open(filepath, O_RDONLY);
-	//fd = 0;
-	line = get_next_line(fd);
-	printf("%s", line);
-	while (line)
-	{
-		printf("%s", line);
-		free (line);
-		line = get_next_line(fd);
-	}
-	//line = get_next_line(fd);
-	if (line)
-		free (line);
-	close (fd);
-	return (0);
-}
+// 	filepath = "empty.txt";
+// 	fd = open(filepath, O_RDONLY);
+// 	//fd = 0;
+// 	line = get_next_line(fd);
+// 	printf("%s", line);
+// 	while (line)
+// 	{
+// 		printf("%s", line);
+// 		free (line);
+// 		line = get_next_line(fd);
+// 	}
+// 	//line = get_next_line(fd);
+// 	if (line)
+// 		free (line);
+// 	close (fd);
+// 	return (0);
+// }
